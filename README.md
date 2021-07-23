@@ -1,2 +1,9 @@
 # coder-house
-Coderhouse excercises
+Coderhouse Entregable número 3
+
+## Instructions
+
+Run project:
+```
+node index.js
+```
