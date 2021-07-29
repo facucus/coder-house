@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consigna 1</title>
+</head>
+
+<body>
+  <div>
+    <input type="text" id="myInput" />
+    <p id="text"></p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.2.0/rxjs.umd.min.js"
+    integrity="sha512-MlqMFvHwgWJ1vfts5fdC2WzxDaIXWfYuAd9Tb2lobtF61Gk+HIRDrbtxgasBSM9lZgOK9ilwK9LqFIYEV+k0IA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <script>
+    const { fromEvent } = rxjs;
+    const { map } = rxjs.operators;
+    const input = document.querySelector("#myInput");
+    const text = document.querySelector("#text");
+
+    // const source
+    const observable = fromEvent(input, "keyup")
+      .pipe(
+        map(e => ({
+          str: e.target.value,
+          reverse: e.target.value.split("").reverse().join("")
+        }))
+      )
+      .subscribe({
+        next: x => {
+          if (x.str === "error") {
+            observable.error("aaaahhhhhh")
+          }
+          if (x.str === "done") {
+            observable.complete()
+          }
+          text.innerHTML = x.reverse
+        },
+        error: err => console.error('Observer got an error: ' + err),
+        complete: () => console.log('Observer got a complete notification'),
+      })
+
+    setTimeout(() => {
+      observable.unsubscribe()
+    }, 30000)
+
+  </script>
+</body>
+
+</html>
