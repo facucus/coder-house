@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { stringify } = require("querystring");
 
 class Archivo {
   constructor(fileName) {
