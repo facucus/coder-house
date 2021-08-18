@@ -1,31 +1,34 @@
 import express from "express";
-import Archivo from "./read.mjs";
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
-const visitas = {
-  items: 0,
-  item: 0,
-};
+let productos = [];
 
-app.get("/items", async (req, res) => {
-  visitas.items = visitas.items + 1;
-  const file = new Archivo("productos.txt");
-  const products = await file.leerArchivo();
-  res.json({ items: products, cantidad: products.length });
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/api/productos/listar", (req, res) => {
+  res.json({ res: productos });
 });
 
-app.get("/item-random", async (req, res) => {
-  visitas.item = visitas.item + 1;
-  const file = new Archivo("productos.txt");
-  const products = await file.leerArchivo();
-  const randomItem = products[Math.floor(Math.random() * products.length)];
-  res.json({ item: randomItem });
+app.get("/api/productos/listar/:id", (req, res) => {
+  const product = productos.find((prod) => prod.id === Number(req.params.id));
+  if (!product) {
+    res.json({ error: "Producto no encontrado" });
+  }
+  res.json({ res: product });
 });
 
-app.get("/visitas", (req, res) => {
-  res.json({ visitas });
+app.post("/api/productos/guardar", (req, res) => {
+  const newProduct = {
+    id: productos.length + 1,
+    title: req.body.title,
+    price: req.body.price,
+    thumbnail: req.body.thumbnail,
+  };
+  productos = [...productos, newProduct];
+  res.json({ res: newProduct });
 });
 
 const server = app.listen(PORT, () => {
